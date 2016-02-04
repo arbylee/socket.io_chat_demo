@@ -5,29 +5,30 @@ var server = http.Server(app);
 var io = require('socket.io')(server);
 var path = require('path');
 
-app.use(express.static(__dirname + '/../public'));
-app.use(express.static(__dirname + '/../vendor'));
+app.use(express.static(__dirname + '/../dist'));
 
 app.get('/', function(req, res){
-    res.sendFile(path.resolve(__dirname + '/../public/html/index.html'));
+    res.sendFile(path.resolve(__dirname + '/../dist/index.html'));
 });
 
-io.on('connection', function(socket){
+chatIo = io.of('/chat');
+
+chatIo.on('connection', function(socket){
   console.log('a user connected');
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });
 });
 
-io.on('connection', function(socket){
+chatIo.on('connection', function(socket){
   socket.on('chat message', function(msg){
     console.log('message: ' + msg);
   });
 });
 
-io.on('connection', function(socket){
+chatIo.on('connection', function(socket){
   socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
+    chatIo.emit('chat message', msg);
   });
 });
 
