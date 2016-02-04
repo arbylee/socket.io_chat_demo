@@ -1,9 +1,15 @@
-var app = require('express')();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
+var express = require('express');
+var app = express();
+var http = require('http')
+var server = http.Server(app);
+var io = require('socket.io')(server);
+var path = require('path');
+
+app.use(express.static(__dirname + '/../public'));
+app.use(express.static(__dirname + '/../vendor'));
 
 app.get('/', function(req, res){
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.resolve(__dirname + '/../public/html/index.html'));
 });
 
 io.on('connection', function(socket){
@@ -25,7 +31,7 @@ io.on('connection', function(socket){
   });
 });
 
-http.listen(3000, function(){
+server.listen(3000, function(){
     console.log('listening on *:3000');
 });
 
